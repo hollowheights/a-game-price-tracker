@@ -1,6 +1,8 @@
 name: Hourly price check
 
 on:
+  push:
+    branches: [master]
   schedule:
     # Every hour at :05 (UTC). GitHub may delay a few minutes.
     - cron: "5 * * * *"
