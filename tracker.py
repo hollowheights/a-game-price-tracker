@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import csv
 import json
 import re
 import sqlite3
@@ -15,6 +16,7 @@ import requests
 ROOT = Path(__file__).resolve().parent
 CONFIG_PATH = ROOT / "config.json"
 DB_PATH = ROOT / "data" / "prices.db"
+CSV_PATH = ROOT / "data" / "prices.csv"
 LOCAL_TZ = ZoneInfo("Europe/Copenhagen")
 USER_AGENT = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -208,9 +210,41 @@ def log_snapshot(product_url: str, snapshot: PriceSnapshot) -> None:
         )
 
 
+def export_prices_csv() -> Path | None:
+    if not DB_PATH.exists():
+        return None
+
+    with sqlite3.connect(DB_PATH) as conn:
+        rows = conn.execute(
+            """
+            SELECT checked_at, price_dkk, list_price_dkk, in_stock, availability, error
+            FROM price_checks
+            ORDER BY checked_at ASC
+            """
+        ).fetchall()
+
+    if not rows:
+        return None
+
+    CSV_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with CSV_PATH.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(
+            ["checked_at", "price_dkk", "list_price_dkk", "in_stock", "availability", "error"]
+        )
+        for checked_at, price_dkk, list_price_dkk, in_stock, availability, error in rows:
+            stock = "" if in_stock is None else ("yes" if in_stock else "no")
+            writer.writerow(
+                [checked_at, price_dkk, list_price_dkk, stock, availability or "", error or ""]
+            )
+
+    return CSV_PATH
+
+
 def check_once() -> PriceSnapshot:
     config = load_config()
     init_db()
     snapshot = fetch_price(config["product_url"], str(config["variation_id"]))
     log_snapshot(config["product_url"], snapshot)
+    export_prices_csv()
     return snapshot
