@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from chart import generate_chart
+from notify import maybe_notify
 from tracker import check_once
 
 
@@ -21,6 +22,9 @@ def main() -> int:
         print(f"Chart saved: {chart}")
     else:
         print("No chart yet (need at least one logged price)")
+
+    for note in maybe_notify(snapshot):
+        print(f"ALERT: {note}")
 
     return 1 if snapshot.error else 0
 
