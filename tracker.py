@@ -234,8 +234,11 @@ def export_prices_csv() -> Path | None:
         )
         for checked_at, price_dkk, list_price_dkk, in_stock, availability, error in rows:
             stock = "" if in_stock is None else ("yes" if in_stock else "no")
+            when = datetime.fromisoformat(checked_at).astimezone(LOCAL_TZ).strftime(
+                "%d/%m/%Y %H:%M"
+            )
             writer.writerow(
-                [checked_at, price_dkk, list_price_dkk, stock, availability or "", error or ""]
+                [when, price_dkk, list_price_dkk, stock, availability or "", error or ""]
             )
 
     return CSV_PATH
