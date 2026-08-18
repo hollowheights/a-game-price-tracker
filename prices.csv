@@ -53,3 +53,4 @@ checked_at,price_dkk,list_price_dkk,in_stock,availability,error
 18/08/2026 06:43,187.0,,yes,https://schema.org/InStock,
 18/08/2026 07:36,187.0,,no,https://schema.org/OutOfStock,
 18/08/2026 08:56,245.0,,no,https://schema.org/OutOfStock,
+18/08/2026 09:46,245.0,,no,https://schema.org/OutOfStock,
