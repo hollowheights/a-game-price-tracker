@@ -3,7 +3,7 @@
   "product_name": "Geek & Gorgeous A-Game 20 (Parfumdreams)",
   "variation_id": "221879",
   "alert": {
-    "enabled": true,
+    "enabled": false,
     "price_below_dkk": 130,
     "only_in_stock": true,
     "notify_on_each_check_while_below": false

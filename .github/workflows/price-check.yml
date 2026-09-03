@@ -1,9 +1,6 @@
 name: Hourly price check
 
 on:
-  schedule:
-    # Every hour at :05 (UTC). GitHub may delay a few minutes.
-    - cron: "5 * * * *"
   workflow_dispatch:
 
 permissions:
